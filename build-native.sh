@@ -5,5 +5,7 @@ native-image --no-server --no-fallback -H:+TraceClassInitialization -H:Configura
 --initialize-at-build-time=io.netty \
 --initialize-at-run-time=io.netty.resolver.dns.DnsNameResolver \
 --initialize-at-run-time=io.netty.resolver.HostsFileEntriesResolver \
+--initialize-at-run-time=io.netty.resolver.dns.DefaultDnsServerAddressStreamProvider \
+'--initialize-at-run-time=io.netty.resolver.dns.DnsServerAddressStreamProviders$DefaultProviderHolder' \
 -cp `find target/deps | tr '\n' ':'`target/netty-InetAddress-native-image-diagnosing-1.0-SNAPSHOT.jar Main target/app
 

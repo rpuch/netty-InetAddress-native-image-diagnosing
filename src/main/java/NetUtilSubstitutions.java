@@ -21,6 +21,10 @@ final class NetUtilSubstitutions {
     @InjectAccessors(NetUtilLocalhost6Accessor.class)
     public static Inet6Address LOCALHOST6;
 
+    @Alias
+    @InjectAccessors(NetUtilLocalhostAccessor.class)
+    public static InetAddress LOCALHOST;
+
     private static class NetUtilLocalhost4Accessor {
         private static volatile Inet4Address ADDR;
 
@@ -84,6 +88,21 @@ final class NetUtilSubstitutions {
 
             ADDR = result;
             return result;
+        }
+    }
+
+    // NOTE: this is the simpliest implementation I could invent to just demonstrate the idea; it is probably not
+    // too efficient. An efficient implementation would only have getter and it would compute the InetAddress
+    // there; but the post is already very long, and NetUtil.LOCALHOST computation logic in Netty is rather cumbersome.
+    private static class NetUtilLocalhostAccessor {
+        private static volatile InetAddress ADDR;
+
+        static InetAddress get() {
+            return ADDR;
+        }
+
+        static void set(InetAddress addr) {
+            ADDR = addr;
         }
     }
 }
