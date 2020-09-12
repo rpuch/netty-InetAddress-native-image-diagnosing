@@ -26,68 +26,48 @@ final class NetUtilSubstitutions {
     public static InetAddress LOCALHOST;
 
     private static class NetUtilLocalhost4Accessor {
-        private static volatile Inet4Address ADDR;
-
         static Inet4Address get() {
-            Inet4Address result = ADDR;
-            if (result == null) {
-                // Lazy initialization on first access.
-                result = initializeOnce();
-            }
-            return result;
+            // using https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
+            return NetUtilLocalhost4LazyHolder.LOCALHOST4;
         }
+    }
 
-        private static synchronized Inet4Address initializeOnce() {
-            Inet4Address result = ADDR;
-            if (result != null) {
-                // Double-checked locking is OK because INSTANCE is volatile.
-                return result;
-            }
+    private static class NetUtilLocalhost4LazyHolder {
+        private static final Inet4Address LOCALHOST4;
 
+        static {
             byte[] LOCALHOST4_BYTES = {127, 0, 0, 1};
             // Create IPv4 loopback address.
             try {
-                result = (Inet4Address) InetAddress.getByAddress("localhost", LOCALHOST4_BYTES);
+                LOCALHOST4 = (Inet4Address) InetAddress.getByAddress("localhost", LOCALHOST4_BYTES);
             } catch (Exception e) {
                 // We should not get here as long as the length of the address is correct.
                 PlatformDependent.throwException(e);
+                throw new IllegalStateException("Should not reach here");
             }
-
-            ADDR = result;
-            return result;
         }
     }
 
     private static class NetUtilLocalhost6Accessor {
-        private static volatile Inet6Address ADDR;
-
         static Inet6Address get() {
-            Inet6Address result = ADDR;
-            if (result == null) {
-                // Lazy initialization on first access.
-                result = initializeOnce();
-            }
-            return result;
+            // using https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom
+            return NetUtilLocalhost6LazyHolder.LOCALHOST6;
         }
+    }
+    
+    private static class NetUtilLocalhost6LazyHolder {
+        private static final Inet6Address LOCALHOST6;
 
-        private static synchronized Inet6Address initializeOnce() {
-            Inet6Address result = ADDR;
-            if (result != null) {
-                // Double-checked locking is OK because INSTANCE is volatile.
-                return result;
-            }
-
+        static {
             byte[] LOCALHOST6_BYTES = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
             // Create IPv6 loopback address.
             try {
-                result = (Inet6Address) InetAddress.getByAddress("localhost", LOCALHOST6_BYTES);
+                LOCALHOST6 = (Inet6Address) InetAddress.getByAddress("localhost", LOCALHOST6_BYTES);
             } catch (Exception e) {
                 // We should not get here as long as the length of the address is correct.
                 PlatformDependent.throwException(e);
+                throw new IllegalStateException("Should not reach here");
             }
-
-            ADDR = result;
-            return result;
         }
     }
 
